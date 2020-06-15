@@ -3,30 +3,32 @@ import { MDBRow, MDBCol, MDBInput, MDBBtn ,Container} from "mdbreact";
 import Axios from 'axios'
 class FormComponent extends React.Component {
   state = {
-   email:"",
-   password:"",
-   ConfrimPassword:"",
+    username:"",
+    email:"",
+    password:"",
+    ConfrimPassword:"",
+
   };
 
   submitHandler = event => {
     event.preventDefault();
-    const {password, ConfrimPassword,confirmed}=this.state;
-    if(password===ConfrimPassword){
+    const {password, ConfrimPassword,confirmed,email,username}=this.state;
+    if(password===ConfrimPassword && this.state.email.length >5 && this.state.password.length >= 7 && this.state.username.length>4){
+        console.log(username,email,password)
         event.target.className += " was-validated"
         Axios.post('https://burger-app-1faea.firebaseio.com/test.json', {
+            username:this.state.username,
             email:this.state.email,
             password:this.state.password,
         }
-    )
-    .then(function(response) {
-        console.log(response);
-    })
-    .catch(function(error) {
-        console.log("not send");
-    });
+        ).then(function(response) {
+            console.log(response);
+        }).catch(function(error) {
+            console.log("not send");
+        });
 
     }else{
-        console.log("not matched")
+        console.log("doesn't meet the requirements")
     }
 
   };
@@ -44,6 +46,21 @@ class FormComponent extends React.Component {
           noValidate
         >
             <h3 style={{lineHeight:4}}>Sign UP Form</h3>
+            <MDBRow>
+            <MDBCol xs={"8"} md={"8"}>
+              <MDBInput
+                value={this.state.username}
+                onChange={this.changeHandler}
+                type="text"
+                name="username"
+                label="username"
+                required
+              >
+                
+              </MDBInput>
+            </MDBCol>
+            
+          </MDBRow>
           <MDBRow>
             <MDBCol xs={"8"} md={"8"}>
               <MDBInput
@@ -86,7 +103,10 @@ class FormComponent extends React.Component {
               </MDBInput>
             </MDBCol>
           </MDBRow>
-          <MDBBtn color="success" type="submit">
+                <div className="valid-feedback">
+                    All Set
+                </div>
+          <MDBBtn color="primary" type="submit">
             Sign Up
           </MDBBtn>
         </form>
